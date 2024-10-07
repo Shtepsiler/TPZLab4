@@ -1,0 +1,23 @@
+### GET All
+GET http://localhost:8080/api/jobs/
+
+### GET first one
+GET http://localhost:8080/api/jobs/550e8400-e29b-41d4-a716-446655440000
+
+### DELETE first one
+DELETE http://localhost:8080/api/jobs/550e8400-e29b-41d4-a716-446655440000
+
+### Create one
+POST http://localhost:8080/api/jobs
+Content-Type: application/json
+
+{
+  "modelId": "b1a05ed4-6c48-4a55-85e7-80d70f1c36a1",
+  "modelName": "name-to-test",
+  "clientId": "fa643ae2-5150-49b6-b60e-1cb3d9c8c531",
+  "issueDate": "2024-10-07T15:30:00",
+  "description": "description-t"
+}
+
+
+
