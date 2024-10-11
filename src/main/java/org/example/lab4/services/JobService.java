@@ -1,5 +1,6 @@
 package org.example.lab4.services;
 
+import org.example.lab4.DTOs.JobDTO;
 import org.example.lab4.models.Job;
 import org.example.lab4.repositories.FakeJobRepository;
 import org.example.lab4.repositories.interfaces.*;
@@ -32,9 +33,9 @@ public class JobService {
     }
 
     // Update an existing job
-    public void updateJob(Job job) {
+    public void updateJob(JobDTO job) {
         if (job != null && job.getId() != null) {
-            jobRepository.update(job);
+            jobRepository.update(job.mapToEntity());
         } else {
             throw new IllegalArgumentException("Invalid job details");
         }

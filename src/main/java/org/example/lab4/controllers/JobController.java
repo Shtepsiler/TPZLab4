@@ -2,11 +2,10 @@ package org.example.lab4.controllers;
 
 import org.example.lab4.DTOs.CreateJobDTO;
 import org.example.lab4.DTOs.JobDTO;
-import org.example.lab4.DTOs.UpdateJobDto;
+import org.example.lab4.DTOs.UpdateJobDTO;
 import org.example.lab4.models.Job;
 import org.example.lab4.services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,39 +63,39 @@ public class JobController {
         }
     }
 
-    @GetMapping("/byMechanicId")
-    public ResponseEntity<List<JobDTO>> getJobsByMechanicId(@RequestParam UUID mechanicId) {
-        try {
-            List<Job> jobs = jobService.getAllJobs().stream()
-                    .filter(job -> job.getMechanicId().equals(mechanicId))
-                    .collect(Collectors.toList());
+//    @GetMapping("/byMechanicId")
+//    public ResponseEntity<List<JobDTO>> getJobsByMechanicId(@RequestParam UUID mechanicId) {
+//        try {
+//            List<Job> jobs = jobService.getAllJobs().stream()
+//                    .filter(job -> job.getMechanicId().equals(mechanicId))
+//                    .collect(Collectors.toList());
+//
+//            List<JobDTO> jobDTOs = jobs.stream()
+//                    .map(JobDTO::new)
+//                    .collect(Collectors.toList());
+//
+//            return ResponseEntity.ok(jobDTOs);
+//        } catch (Exception ex) {
+//            return ResponseEntity.status(500).body(null);
+//        }
+//    }
 
-            List<JobDTO> jobDTOs = jobs.stream()
-                    .map(JobDTO::new)
-                    .collect(Collectors.toList());
-
-            return ResponseEntity.ok(jobDTOs);
-        } catch (Exception ex) {
-            return ResponseEntity.status(500).body(null);
-        }
-    }
-
-    @GetMapping("/byUserId")
-    public ResponseEntity<List<JobDTO>> getJobsByUserId(@RequestParam UUID userId) {
-        try {
-            List<Job> jobs = jobService.getAllJobs().stream()
-                    .filter(job -> job.getClientId().equals(userId))
-                    .collect(Collectors.toList());
-
-            List<JobDTO> jobDTOs = jobs.stream()
-                    .map(JobDTO::new)
-                    .collect(Collectors.toList());
-
-            return ResponseEntity.ok(jobDTOs);
-        } catch (Exception ex) {
-            return ResponseEntity.status(500).body(null);
-        }
-    }
+//    @GetMapping("/byUserId")
+//    public ResponseEntity<List<JobDTO>> getJobsByUserId(@RequestParam UUID userId) {
+//        try {
+//            List<Job> jobs = jobService.getAllJobs().stream()
+//                    .filter(job -> job.getClientId().equals(userId))
+//                    .collect(Collectors.toList());
+//
+//            List<JobDTO> jobDTOs = jobs.stream()
+//                    .map(JobDTO::new)
+//                    .collect(Collectors.toList());
+//
+//            return ResponseEntity.ok(jobDTOs);
+//        } catch (Exception ex) {
+//            return ResponseEntity.status(500).body(null);
+//        }
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<JobDTO> getById(@PathVariable UUID id) {
@@ -113,9 +112,9 @@ public class JobController {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody UpdateJobDto command) {
+    public ResponseEntity<?> update(@RequestBody UpdateJobDTO command) {
         try {
-            Job jobToUpdate = jobService.getJobById(command.getId());
+            JobDTO jobToUpdate = new JobDTO(jobService.getJobById(command.getId()));
             if (jobToUpdate != null) {
                 jobToUpdate.setManagerId(command.getManagerId());
                 jobToUpdate.setModelId(command.getModelId());
@@ -130,7 +129,7 @@ public class JobController {
                 jobToUpdate.setPrice(command.getPrice());
 
                 jobService.updateJob(jobToUpdate);
-                return ResponseEntity.ok(new JobDTO(jobToUpdate)); // Return updated Job as a DTO
+                return ResponseEntity.ok(jobToUpdate); // Return updated Job as a DTO
             }
             return ResponseEntity.notFound().build();
         } catch (Exception ex) {

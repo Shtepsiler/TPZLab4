@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateJobDto {
+public class UpdateJobDTO {
     private UUID id;
     private UUID managerId;
     private UUID modelId;
@@ -26,7 +26,7 @@ public class UpdateJobDto {
     private BigDecimal price;
 
     // Constructor that accepts a Job object
-    public UpdateJobDto(Job job) {
+    public UpdateJobDTO(Job job) {
         this.id = job.getId();
         this.managerId = job.getManagerId();
         this.modelId = job.getModelId();
