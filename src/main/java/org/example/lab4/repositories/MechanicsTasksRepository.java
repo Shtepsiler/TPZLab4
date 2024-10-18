@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class MechanicsTasksRepository {
+    public MechanicsTasksRepository(){}
     private final String jdbcUrl = "jdbc:sqlserver://localhost:1433;databaseName=javalab4";
     private final String username = "sa";
     private final String password = "Qwerty123";

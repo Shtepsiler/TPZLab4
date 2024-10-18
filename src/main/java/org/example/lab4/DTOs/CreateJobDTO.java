@@ -11,9 +11,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class CreateJobDTO {
+    public CreateJobDTO() {}
     private String modelId;
     private String modelName;
     private String clientId;

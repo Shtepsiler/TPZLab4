@@ -9,10 +9,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class UpdateMechanicTaskDTO {
-
+    public UpdateMechanicTaskDTO(){}
     private UUID id;
     private UUID mechanicId;
     private String name;

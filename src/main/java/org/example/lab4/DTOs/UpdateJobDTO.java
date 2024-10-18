@@ -2,16 +2,15 @@ package org.example.lab4.DTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.example.lab4.models.Job;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class UpdateJobDTO {
+    public UpdateJobDTO(){}
     private UUID id;
     private UUID managerId;
     private UUID modelId;

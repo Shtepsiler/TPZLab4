@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data // Generates getters, setters, toString, equals, and hashCode methods
-@NoArgsConstructor // Generates a no-argument constructor
 @AllArgsConstructor // Generates an all-arguments constructor
 @Builder // Generates a builder pattern for the class
 public class MechanicsTasks {
@@ -22,4 +21,6 @@ public class MechanicsTasks {
     private Job job; // Assuming Job is another entity class
     private String task;
     private String status;
+
+    public MechanicsTasks(){}
 }

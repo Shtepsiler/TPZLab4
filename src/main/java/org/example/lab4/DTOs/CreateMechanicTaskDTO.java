@@ -8,10 +8,9 @@ import org.example.lab4.models.MechanicsTasks;
 import java.time.LocalDateTime;
 import java.util.UUID;
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class CreateMechanicTaskDTO {
-
+    public CreateMechanicTaskDTO(){}
     private UUID mechanicId;
     private String name;
     private UUID jobId;

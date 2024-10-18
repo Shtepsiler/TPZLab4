@@ -8,10 +8,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class JobDTO {
-
+    public JobDTO() {}
     private UUID id;
     private UUID managerId;
     private UUID modelId;

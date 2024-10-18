@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class JobRepository implements IJobRepository {
+    public JobRepository() {}
     private final String jdbcUrl = "jdbc:sqlserver://localhost:1433;databaseName=javalab4;encrypt=true;trustServerCertificate=true;";
     private final String username = "sa";
     private final String password = "Qwerty123";

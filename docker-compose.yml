@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    image: your-app-name
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - sqlserver
+    environment:
+      SQL_SERVER_HOST: sqlserver
+      SQL_SERVER_PORT: 1433
+      SQL_SERVER_DB: javalab4
+      SQL_SERVER_USER: sa
+      SQL_SERVER_PASSWORD: Qwerty123
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Qwerty123"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+
+volumes:
+  sqlserver-data:

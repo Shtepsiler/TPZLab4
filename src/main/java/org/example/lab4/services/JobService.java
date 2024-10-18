@@ -3,14 +3,13 @@ package org.example.lab4.services;
 import org.example.lab4.DTOs.JobDTO;
 import org.example.lab4.models.Job;
 import org.example.lab4.repositories.*;
-import org.example.lab4.repositories.interfaces.*;
+import org.example.lab4.repositories.interfaces.IJobRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 @Service
 public class JobService {
-
     private final IJobRepository jobRepository;
 
     public JobService() {

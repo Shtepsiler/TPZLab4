@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @Builder // Generates a builder pattern
 public class Job {
 
@@ -28,6 +27,7 @@ public class Job {
     private BigDecimal price;
     private List<MechanicsTasks> tasks = new ArrayList<>(); // Assuming MechanicsTasks is another entity
 
+    public Job(){}
     // If you want to add any specific constructor logic, you can define it here
     // For example, you might want to set a default value for `status` when creating a new Job
     public Job(UUID id,

@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
+
 @AllArgsConstructor
 public class JobWithTasksDTO {
+    public JobWithTasksDTO() {}
     private UUID id;
     private UUID managerId;
     private UUID modelId;
