@@ -1,12 +1,3 @@
-### GET All
-GET http://localhost:8080/api/jobs/
-
-### GET first one
-GET http://localhost:8080/api/jobs/550e8400-e29b-41d4-a716-446655440000
-
-### DELETE first one
-DELETE http://localhost:8080/api/jobs/550e8400-e29b-41d4-a716-446655440000
-
 ### Create one
 POST http://localhost:8080/api/jobs
 Content-Type: application/json
@@ -19,5 +10,16 @@ Content-Type: application/json
   "description": "description-t"
 }
 
+
+### GET All
+GET http://localhost:8080/api/jobs/
+Content-Type: application/json
+
+### GET first one
+GET http://localhost:8080/api/jobs/6694EF1B-E700-4437-A910-0BB57C2D352B
+Content-Type: application/json
+
+### DELETE first one
+DELETE http://localhost:8080/api/jobs/6694EF1B-E700-4437-A910-0BB57C2D352B
 
 

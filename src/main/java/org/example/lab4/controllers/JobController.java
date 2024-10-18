@@ -7,9 +7,13 @@ import org.example.lab4.models.Job;
 import org.example.lab4.services.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,7 +36,14 @@ public class JobController {
             jobService.deleteJob(id); // Call the service to delete the job
             return ResponseEntity.ok().build();
         } catch (Exception ex) {
-            return ResponseEntity.status(500).body(ex.getMessage());
+            // Create HttpHeaders and add custom header
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("error", ex.getMessage()); // Fix the way to add headers
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) // Use HttpStatus enum
+                    .headers(httpHeaders) // Set headers
+                    .body(null); // Set the body to null
+
         }
     }
 
@@ -45,7 +56,14 @@ public class JobController {
             jobService.createJob(newJob);
             return ResponseEntity.ok(new JobDTO(newJob)); // Return created Job as a DTO
         } catch (Exception ex) {
-            return ResponseEntity.status(500).body(ex.getMessage());
+            // Create HttpHeaders and add custom header
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("error", ex.getMessage()); // Fix the way to add headers
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) // Use HttpStatus enum
+                    .headers(httpHeaders) // Set headers
+                    .body(null); // Set the body to null
+
         }
     }
 
@@ -59,7 +77,66 @@ public class JobController {
                     .collect(Collectors.toList());
             return ResponseEntity.ok(jobDTOs);
         } catch (Exception ex) {
-            return ResponseEntity.status(500).body(null);
+            // Create HttpHeaders and add custom header
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("error", ex.getMessage()); // Fix the way to add headers
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) // Use HttpStatus enum
+                    .headers(httpHeaders) // Set headers
+                    .body(null); // Set the body to null
+        }
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<JobDTO> getById(@PathVariable UUID id) {
+        try {
+            Job job = jobService.getJobById(id);
+            if (job != null) {
+                JobDTO jobDTO = new JobDTO(job); // Convert Job entity to JobDTO
+                return ResponseEntity.ok(jobDTO);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception ex) {
+            // Create HttpHeaders and add custom header
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("error", ex.getMessage()); // Fix the way to add headers
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) // Use HttpStatus enum
+                    .headers(httpHeaders) // Set headers
+                    .body(null); // Set the body to null
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody UpdateJobDTO command) {
+        try {
+            JobDTO jobToUpdate = new JobDTO(jobService.getJobById(command.getId()));
+            if (jobToUpdate != null) {
+                jobToUpdate.setManagerId(command.getManagerId());
+                jobToUpdate.setModelId(command.getModelId());
+                jobToUpdate.setModelName(command.getModelName());
+                jobToUpdate.setStatus(command.getStatus());
+                jobToUpdate.setClientId(command.getClientId());
+                jobToUpdate.setMechanicId(command.getMechanicId());
+                jobToUpdate.setOrderId(command.getOrderId());
+                jobToUpdate.setIssueDate(command.getIssueDate());
+                jobToUpdate.setFinishDate(command.getFinishDate());
+                jobToUpdate.setDescription(command.getDescription());
+                jobToUpdate.setPrice(command.getPrice());
+                jobService.updateJob(jobToUpdate);
+                return ResponseEntity.ok(jobToUpdate); // Return updated Job as a DTO
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception ex) {
+            // Create HttpHeaders and add custom header
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add("error", ex.getMessage()); // Fix the way to add headers
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR) // Use HttpStatus enum
+                    .headers(httpHeaders) // Set headers
+                    .body(null); // Set the body to null
+
         }
     }
 
@@ -97,43 +174,4 @@ public class JobController {
 //        }
 //    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<JobDTO> getById(@PathVariable UUID id) {
-        try {
-            Job job = jobService.getJobById(id);
-            if (job != null) {
-                JobDTO jobDTO = new JobDTO(job); // Convert Job entity to JobDTO
-                return ResponseEntity.ok(jobDTO);
-            }
-            return ResponseEntity.notFound().build();
-        } catch (Exception ex) {
-            return ResponseEntity.status(500).body(null);
-        }
-    }
-
-    @PutMapping
-    public ResponseEntity<?> update(@RequestBody UpdateJobDTO command) {
-        try {
-            JobDTO jobToUpdate = new JobDTO(jobService.getJobById(command.getId()));
-            if (jobToUpdate != null) {
-                jobToUpdate.setManagerId(command.getManagerId());
-                jobToUpdate.setModelId(command.getModelId());
-                jobToUpdate.setModelName(command.getModelName());
-                jobToUpdate.setStatus(command.getStatus());
-                jobToUpdate.setClientId(command.getClientId());
-                jobToUpdate.setMechanicId(command.getMechanicId());
-                jobToUpdate.setOrderId(command.getOrderId());
-                jobToUpdate.setIssueDate(command.getIssueDate());
-                jobToUpdate.setFinishDate(command.getFinishDate());
-                jobToUpdate.setDescription(command.getDescription());
-                jobToUpdate.setPrice(command.getPrice());
-
-                jobService.updateJob(jobToUpdate);
-                return ResponseEntity.ok(jobToUpdate); // Return updated Job as a DTO
-            }
-            return ResponseEntity.notFound().build();
-        } catch (Exception ex) {
-            return ResponseEntity.status(500).body(ex.getMessage());
-        }
-    }
 }

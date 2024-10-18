@@ -4,6 +4,7 @@ package org.example.lab4.models;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public class Job {
     private LocalDateTime  finishDate;
     private String description;
     private BigDecimal price;
-    private List<MechanicsTasks> tasks; // Assuming MechanicsTasks is another entity
+    private List<MechanicsTasks> tasks = new ArrayList<>(); // Assuming MechanicsTasks is another entity
 
     // If you want to add any specific constructor logic, you can define it here
     // For example, you might want to set a default value for `status` when creating a new Job

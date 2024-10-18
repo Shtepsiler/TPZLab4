@@ -1,16 +1,15 @@
 package org.example.lab4.repositories;
 
 import org.example.lab4.models.Job;
+import org.example.lab4.repositories.interfaces.IJobRepository;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.example.lab4.repositories.interfaces.IJobRepository;
+
 public class JobRepository implements IJobRepository {
-    private final String jdbcUrl = "jdbc:sqlserver://localhost:1433;databaseName=javalab4";
+    private final String jdbcUrl = "jdbc:sqlserver://localhost:1433;databaseName=javalab4;encrypt=true;trustServerCertificate=true;";
     private final String username = "sa";
     private final String password = "Qwerty123";
 
@@ -47,14 +46,14 @@ public class JobRepository implements IJobRepository {
         try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(sql); ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 Job job = new Job();
-                job.setId((UUID) resultSet.getObject("Id"));
-                job.setManagerId((UUID) resultSet.getObject("ManagerId"));
-                job.setModelId((UUID) resultSet.getObject("ModelId"));
+                job.setId(UUID.fromString(resultSet.getString("Id"))); // Convert String to UUID
+                job.setManagerId(resultSet.getString("ManagerId") != null ? UUID.fromString(resultSet.getString("ManagerId")) : null); // Handle null
+                job.setModelId(resultSet.getString("ModelId") != null ? UUID.fromString(resultSet.getString("ModelId")) : null); // Handle null
                 job.setModelName(resultSet.getString("ModelName"));
                 job.setStatus(resultSet.getString("Status"));
-                job.setClientId((UUID) resultSet.getObject("ClientId"));
-                job.setMechanicId((UUID) resultSet.getObject("MechanicId"));
-                job.setOrderId((UUID) resultSet.getObject("OrderId"));
+                job.setClientId(resultSet.getString("ClientId") != null ? UUID.fromString(resultSet.getString("ClientId")) : null); // Handle null
+                job.setMechanicId(resultSet.getString("MechanicId") != null ? UUID.fromString(resultSet.getString("MechanicId")) : null); // Handle null
+                job.setOrderId(resultSet.getString("OrderId") != null ? UUID.fromString(resultSet.getString("OrderId")) : null); // Handle null
                 job.setIssueDate(resultSet.getTimestamp("IssueDate").toLocalDateTime());
                 job.setFinishDate(resultSet.getTimestamp("FinishDate") != null ? resultSet.getTimestamp("FinishDate").toLocalDateTime() : null);
                 job.setDescription(resultSet.getString("Description"));
