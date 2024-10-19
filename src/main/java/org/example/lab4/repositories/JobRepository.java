@@ -9,15 +9,95 @@ import java.util.List;
 import java.util.UUID;
 
 public class JobRepository implements IJobRepository {
-    public JobRepository() {}
-    private final String jdbcUrl = "jdbc:sqlserver://localhost:1433;databaseName=javalab4;encrypt=true;trustServerCertificate=true;";
-    private final String username = "sa";
-    private final String password = "Qwerty123";
+    private String jdbcUrl = null;
+    private String username = null;
+    private String password = null;
+    private String serverHost = null;
+    private String serverPort = null;
+    private String databaseName = null;
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(jdbcUrl, username, password);
+    public JobRepository() {
+        // Отримуємо змінні оточення
+        this.serverHost = System.getenv("SQL_SERVER_HOST");
+        this.serverPort = System.getenv("SQL_SERVER_PORT");
+        this.databaseName = System.getenv("SQL_SERVER_DB");
+        this.username = System.getenv("SQL_SERVER_USER");
+        this.password = System.getenv("SQL_SERVER_PASSWORD");
+
+        // Якщо змінна не знайдена, можна задати значення за замовчуванням
+        if (serverHost == null || serverPort == null || databaseName == null || username == null || password == null) {
+            this.serverHost = (serverHost != null) ? serverHost : "localhost";
+            this.serverPort = (serverPort != null) ? serverPort : "1433";
+            this.databaseName = (databaseName != null) ? databaseName : "javalab4";
+            this.username = (username != null) ? username : "sa";
+            this.password = (password != null) ? password : "Qwerty123";
+        }
+
+        // Формуємо рядок підключення
+        this.jdbcUrl = String.format(
+                "jdbc:sqlserver://%s:%s;encrypt=true;trustServerCertificate=true;",
+                serverHost, serverPort
+        );
+
+        // Забезпечуємо створення бази даних і таблиць
+        createDatabaseIfNotExists();
+        createTableIfNotExists();
     }
 
+    private void createDatabaseIfNotExists() {
+        String sql = "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'javalab4') " +
+                "CREATE DATABASE javalab4;";
+        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Connection getConnection() throws SQLException {
+        // Connect to the newly created database
+        return DriverManager.getConnection(jdbcUrl + "databaseName=javalab4;", username, password);
+    }
+
+    private void createTableIfNotExists() {
+        String sqlJobTable = "IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Job') " +
+                "CREATE TABLE Job (" +
+                "Id UNIQUEIDENTIFIER PRIMARY KEY," +
+                "ManagerId UNIQUEIDENTIFIER," +
+                "ModelId UNIQUEIDENTIFIER," +
+                "ModelName NVARCHAR(100)," +
+                "Status NVARCHAR(50) DEFAULT 'New'," +
+                "ClientId UNIQUEIDENTIFIER," +
+                "MechanicId UNIQUEIDENTIFIER," +
+                "OrderId UNIQUEIDENTIFIER," +
+                "IssueDate DATETIME," +
+                "FinishDate DATETIME," +
+                "Description NVARCHAR(MAX)," +
+                "Price DECIMAL(18, 2)" +
+                ");";
+
+        String sqlMechanicsTasksTable = "IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MechanicsTasks') " +
+                "CREATE TABLE MechanicsTasks (" +
+                "Id UNIQUEIDENTIFIER PRIMARY KEY," +
+                "MechanicId UNIQUEIDENTIFIER," +
+                "JobId UNIQUEIDENTIFIER," +
+                "Name NVARCHAR(100)," +
+                "IssueDate DATETIME," +
+                "FinishDate DATETIME," +
+                "Task NVARCHAR(MAX)," +
+                "Status NVARCHAR(50)" +
+                ");";
+
+        try (Connection connection = getConnection();
+             PreparedStatement jobStatement = connection.prepareStatement(sqlJobTable);
+             PreparedStatement mechanicsTasksStatement = connection.prepareStatement(sqlMechanicsTasksTable)) {
+            jobStatement.execute();
+            mechanicsTasksStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void create(Job job) {
         String sql = "INSERT INTO Job (Id, ManagerId, ModelId, ModelName, Status, ClientId, MechanicId, OrderId, IssueDate, FinishDate, Description, Price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
